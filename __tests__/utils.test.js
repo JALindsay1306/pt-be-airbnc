@@ -101,7 +101,6 @@ describe("utils",()=>{
         const rawData = [{ name: "david",name2: "steven" }];
         const keysToAdd = ["id","id2"];
           const formattedData = formatData([{ david: 1 },{steven:2}], ["name","name2"], keysToAdd, rawData);
-        console.log(formattedData)
         expect(formattedData[0]).not.toHaveProperty("name");
         expect(formattedData[0]).not.toHaveProperty("name2");
         expect(formattedData[0]).toHaveProperty("id");

@@ -22,8 +22,8 @@ function insertPropertyTypes(propertyTypes){
 function insertProperties(properties){
     return db.query (
         format(
-            `INSERT into properties (name,location, price_per_night,property_type_id,user_id) VALUES %L RETURNING *`,
-            properties.map(({name,location,price_per_night,property_type_id,user_id})=>[name,location,price_per_night,property_type_id,user_id])
+            `INSERT into properties (name,property_type_id,location, price_per_night,description,user_id) VALUES %L RETURNING *`,
+            properties.map(({name,property_type_id,location,price_per_night,description,user_id})=>[name,property_type_id,location,price_per_night,description,user_id])
         )
     )
 }

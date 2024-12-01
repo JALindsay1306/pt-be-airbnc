@@ -21,9 +21,10 @@ exports.createPropertiesQuery = `
 CREATE TABLE properties (
     property_id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
+    property_type_id INT REFERENCES property_types(property_type_id),
     location VARCHAR NOT NULL,
     price_per_night INT NOT NULL,
-    property_type_id INT REFERENCES property_types(property_type_id),
+    description VARCHAR,
     user_id INT REFERENCES users(user_id)
 );`;
 

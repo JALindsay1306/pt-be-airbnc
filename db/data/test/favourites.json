@@ -38,5 +38,9 @@
   {
     "guest_name": "Bob Smith",
     "property_name": "Quaint Cottage in the Hills"
+  },
+  {
+    "guest_name": "Frank White",
+    "property_name": "Quaint Cottage in the Hills"
   }
 ]

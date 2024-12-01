@@ -4,6 +4,10 @@
   "description": "An app to view available accommodation. More information to follow.",
   "main": "index.js",
   "scripts": {
+    "test-utils": "jest utils",
+    "setup-dbs": "psql -f ./db/setup.sql",
+    "seed": "node ./db/run-seed.js",
+    "test-models": "jest models",
     "test": "jest",
     "setup-dbs": "psql -f ./db/setup.sql"
   },
