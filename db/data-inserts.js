@@ -34,7 +34,16 @@ function insertFavourites(favourites){
             `INSERT into favourites (user_id,property_id) VALUES %L RETURNING *`,
             favourites.map(({user_id,property_id})=>[user_id,property_id])
         )
-    )
+    ).then((result) => {
+        return result; 
+    }).catch((err) => {
+        if (err.code === '23503') { 
+            return {
+                status: 400,
+                message: "Invalid user_id or property_id. Please ensure they exist in the database."
+            };
+        }
+    });
 }
 
 function insertBookings(bookings){
