@@ -1,7 +1,7 @@
 const express = require("express");
 const { getProperties, getSingleProperty} = require("./controllers/propertiesControllers");
 const { deleteFavourite, postFavourite } = require("./controllers/favouritesControllers");
-const {handlePathNotFound,handleCustomError, handleMissingDataError, handleOutOfConstraintError} = require("./errors/handleErrors");
+const {handleValidNonExistentIDError,handleDuplicateError,handleInvalidInputError, handlePathNotFound,handleCustomError, handleMissingDataError, handleOutOfConstraintError} = require("./errors/handleErrors");
 const { getPropertyReviews, postPropertyReview, deletePropertyReview } = require("./controllers/reviewsControllers");
 const { getUsers, patchUser } = require("./controllers/usersControllers");
 const app = express();
@@ -20,7 +20,12 @@ app.all("/*",handlePathNotFound)
 
 app.use(handleMissingDataError);
 app.use(handleOutOfConstraintError);
+app.use(handleInvalidInputError);
+app.use(handleDuplicateError);
+app.use(handleValidNonExistentIDError);
 app.use(handleCustomError);
+
+
 
 
 module.exports = app;

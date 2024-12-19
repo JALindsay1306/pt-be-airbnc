@@ -1,4 +1,4 @@
-const data = require("./data/test");
+const data = require("./data/dev");
 const seed = require("./seed");
 
 const db = require("./connection.js");

@@ -49,9 +49,9 @@
   },
   {
     "guest_name": "Frank White",
-    "property_name": "Chic Studio Near the Beach",
+    "property_name": "Charming Studio Retreat",
     "rating": 3,
-    "comment": "Comment about Chic Studio Near the Beach: Stylish but the bathroom could use some updates."
+    "comment": "Comment about Charming Studio Retreat: Stylish but the bathroom could use some updates."
   },
   {
     "guest_name": "Bob Smith",
@@ -61,8 +61,8 @@
   },
   {
     "guest_name": "Rachel Cummings",
-    "property_name": "Luxury Penthouse with View",
+    "property_name": "Chic Studio Near the Beach",
     "rating": 1,
-    "comment": "Comment about Luxury Penthouse with View: Disappointing experience. The penthouse was overpriced, and the service was poor."
+    "comment": "Comment about Chic Studio Near the Beach: Disappointing experience. The penthouse was overpriced, and the service was poor."
   }
 ]

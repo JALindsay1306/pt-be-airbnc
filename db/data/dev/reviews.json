@@ -60,8 +60,8 @@
     "comment": "A charming cottage, ideal for a relaxing weekend."
   },
   {
-    "property_name": "Bright and Airy Studio",
-    "guest_name": "Frank White",
+    "property_name": "Coastal Retreat with Garden",
+    "guest_name": "Bob Smith",
     "rating": 4,
     "comment": "Clean and simple, just what I needed."
   },
@@ -84,7 +84,7 @@
     "comment": "Great location in the forest, perfect for a peaceful retreat."
   },
   {
-    "property_name": "Seafront Villa with Infinity Pool",
+    "property_name": "Lakeside Luxury Villa",
     "guest_name": "Frank White",
     "rating": 5,
     "comment": "Stunning villa with incredible views."
@@ -144,7 +144,7 @@
     "comment": "Nice place, close to the beach. Would stay again!"
   },
   {
-    "property_name": "Elegant City Apartment",
+    "property_name": "Forest Hideaway Cabin",
     "guest_name": "Olivia Taylor",
     "rating": 3,
     "comment": "It was nice, but I expected a bit more space for the price."

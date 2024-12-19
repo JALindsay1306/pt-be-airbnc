@@ -6,6 +6,7 @@ const {
     createFavouritesQuery,
     createBookingsQuery,
     createReviewsQuery,
+    createImagesQuery,
 } = require("./queries");
 
 async function manageTables() {
@@ -23,6 +24,8 @@ async function manageTables() {
 
     await db.query(`DROP TABLE IF EXISTS users CASCADE;`);
 
+    await db.query(`DROP TABLE IF EXISTS images;`)
+
     await db.query(createusersQuery);
 
     await db.query(createPropertyTypesQuery);
@@ -34,6 +37,8 @@ async function manageTables() {
     await db.query(createBookingsQuery);
 
     await db.query(createReviewsQuery);
+
+    await db.query(createImagesQuery);
 }
 
 module.exports = manageTables;

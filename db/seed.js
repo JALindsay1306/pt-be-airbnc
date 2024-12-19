@@ -9,9 +9,10 @@ const {
   insertFavourites,
   insertBookings,
   insertReviews,
+  insertImages,
 } = require("./data-inserts.js");
 
-const seed = async ({ usersData, propertyTypesData, propertiesData, favouritesData, bookingsData, reviewsData }) => {
+const seed = async ({ usersData, propertyTypesData, propertiesData, favouritesData, bookingsData, reviewsData, imagesData }) => {
   await manageTables();
 
   const { rows: insertedUsers } = await insertUsers(usersData);
@@ -31,6 +32,9 @@ const seed = async ({ usersData, propertyTypesData, propertiesData, favouritesDa
 
   const formattedReviews = formatData([usersRef,propertiesRef],["guest_name","property_name"],["user_id","property_id"],reviewsData)
   await insertReviews (formattedReviews);
+
+  const formattedImages = formatData([propertiesRef],["property_name"],["property_id"],imagesData)
+  await insertImages (formattedImages);
 
 };
 

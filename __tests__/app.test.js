@@ -6,6 +6,7 @@ const data = require("../db/data/test");
 const { fetchProperties } = require("../models/propertiesModels");
 const { getSingleProperty } = require("../controllers/propertiesControllers");
 
+
 beforeAll(async () => {
     await seed(data);
 });
@@ -122,8 +123,11 @@ describe("app",()=>{
             .then(({body})=>{
                 body.properties.forEach((property)=>{
                     expect(property.host).toBe(hostName);
-            })
-        })
+                })
+            });
+        });
+        test("returned properties have a property for the most recently added image",()=>{
+            
         })
         
     });
@@ -316,24 +320,24 @@ describe("app",()=>{
             .expect(201);
         });
         test("returns a new review object",()=>{
-            const newReview = {guest_id: 4, rating: 4, comment: "It was pretty good"};
+            const newReview = {guest_id: 5, rating: 4, comment: "It was pretty good"};
             return request(app).post("/api/properties/3/reviews").send(newReview)
             .then(({body})=>{
                 expect(typeof body).toBe("object");
             })
         });
         test("new review_id is a continuation of existing ids",async()=>{
-            const newReview = {guest_id: 5, rating: 4, comment: "It was pretty good"};
+            const newReview = {guest_id: 5, rating: 5, comment: "It was pretty good"};
             const {rows} = await db.query('SELECT * FROM reviews;');
             const lastReviewID = rows[rows.length-1].review_id;
-            return request(app).post("/api/properties/3/reviews").send(newReview)
+            return request(app).post("/api/properties/8/reviews").send(newReview)
             .then(({body})=>{
                 expect(body.review_id).toBe(lastReviewID+1);
             });
         });
         test("review object contains required properties - review_id, property_id, guest_id, rating, comment, created_at",()=>{
-            const newReview = {guest_id: 6, rating: 4, comment: "It was pretty good"};
-            return request(app).post("/api/properties/3/reviews").send(newReview)
+            const newReview = {guest_id: 6, rating: 5, comment: "It was pretty good"};
+            return request(app).post("/api/properties/8/reviews").send(newReview)
             .then(({body})=>{
                 expect(body).toHaveProperty("review_id");
                 expect(body).toHaveProperty("property_id");
@@ -359,7 +363,7 @@ describe("app",()=>{
             return request(app).post("/api/properties/3765/reviews").send(newReview)
             .expect(404)
             .then(({body})=>{
-                expect(body.msg).toBe("property_id does not exist, review cannot be posted");
+                expect(body.msg).toBe('Key (property_id)=(3765) is not present in table "properties".');
             });
         });
         test("returns an error if passed a non-existent user_id",()=>{
@@ -367,7 +371,7 @@ describe("app",()=>{
             return request(app).post("/api/properties/3/reviews").send(newReview)
             .expect(404)
             .then(({body})=>{
-                expect(body.msg).toBe("user_id does not exist, review cannot be posted");
+                expect(body.msg).toBe('Key (user_id)=(1342) is not present in table "users".');
             });
         });
         test("returns an error if this user has already reviewed this property",async()=>{
@@ -376,7 +380,7 @@ describe("app",()=>{
             return request(app).post("/api/properties/3/reviews").send(newReview)
             .expect(400)
             .then(({body})=>{
-                expect(body.msg).toBe("You have already reviewed this property, delete the existing review before adding another");
+                expect(body.msg).toBe("This combination of ids already exists, please delete the original before replacing.");
             });
         })
         test("returns an error if rating is outside of allowed range",async()=>{
@@ -386,7 +390,15 @@ describe("app",()=>{
             .then(({body})=>{
                 expect(body.msg).toBe("Input data outside of allowed constraints");
             });
-        })
+        });
+        test("if an invalid ID is requested, an error is returned",()=>{
+            const newReview = {guest_id: 1, rating: 4, comment: "It was pretty good"};
+            return request(app).post("/api/properties/eggs/reviews").send(newReview)
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe("Invalid input, please check and try again");
+            })
+        });
     });
     describe("DELETE/propertyReview",()=>{
         test("returns a status code of 204",()=>{
@@ -422,6 +434,13 @@ describe("app",()=>{
             .then(({body})=>{
                 expect(body.msg).toBe("review_id does not exist, cannot delete review");
             });
+        });
+        test("if an invalid ID is requested, an error is returned",()=>{
+            return request(app).delete("/api/reviews/bacon")
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe("Invalid input, please check and try again");
+            })
         });
     });
     describe("GET/users",()=>{
@@ -459,6 +478,13 @@ describe("app",()=>{
             .expect(404)
             .then(({body})=>{
                 expect(body.msg).toBe("user_id does not exist");
+            })
+        });
+        test("if an invalid ID is requested, an error is returned",()=>{
+            return request(app).get("/api/users/sausages")
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe("Invalid input, please check and try again");
             })
         });
     });
@@ -566,7 +592,15 @@ describe("app",()=>{
             .then(({body})=>{
                 expect(body.msg).toBe("created_at cannot be altered");
             });
-        })
+        });
+        test("if an invalid ID is requested, an error is returned",()=>{
+            const patchUser = {first_name:"Jean"};
+            return request(app).patch("/api/users/sausages").send(patchUser)
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe("Invalid input, please check and try again");
+            })
+        });
 
     })
     test("returns a 500 error if the database has incomplete data", async () => {

@@ -22,4 +22,24 @@ function handleOutOfConstraintError(err,req,res,next){
     next(err);
 }
 
-module.exports = {handleCustomError,handlePathNotFound, handleMissingDataError, handleOutOfConstraintError};
+function handleInvalidInputError(err,req,res,next){
+    if (err.code === "22P02"){
+        res.status(400).send({msg:"Invalid input, please check and try again"});
+    };
+    next(err);
+}
+
+function handleDuplicateError(err,req,res,next){
+    if (err.code === "23505"){
+        res.status(400).send({msg:"This combination of ids already exists, please delete the original before replacing."});
+    };
+    next(err);
+}
+
+function handleValidNonExistentIDError(err,req,res,next){
+    if (err.code === "23503"){
+        res.status(404).send({msg:err.detail});
+    };
+    next(err);
+}
+module.exports = {handleValidNonExistentIDError,handleDuplicateError,handleInvalidInputError, handleCustomError,handlePathNotFound, handleMissingDataError, handleOutOfConstraintError};

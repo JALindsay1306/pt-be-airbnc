@@ -44,58 +44,16 @@ function fetchPropertyReviews (property_id) {
     .then(({rows})=>{
         return [rows,Number(average_rating)];
     })
-    .catch((err)=>{
-        return Promise.reject(err);
-    })
 };
 
 function insertPropertyReviewFromApp(review){
-    return db.query('SELECT * FROM reviews')
-    .then(({rows})=>{
-        let doesReviewExist = false;
-        rows.forEach((existingReview)=>{
-            if(review.user_id==existingReview.user_id&&review.property_id==existingReview.property_id){
-                doesReviewExist = true;
-            }
-        })
-        if(doesReviewExist){
-                return Promise.reject({status: 400, msg: 'You have already reviewed this property, delete the existing review before adding another'});
-            }
-    return db.query('SELECT * FROM users;')
-    })
-    .then(({rows})=>{
-        const users=rows;
-        let doesUserExist = false;
-        users.forEach((user)=>{
-            if(user.user_id===review.user_id)
-                {doesUserExist = true};
-            })
-            if(!doesUserExist){
-                return Promise.reject({status: 404, msg: 'user_id does not exist, review cannot be posted'});
-            }
-            return db.query('SELECT * FROM properties;')
-    })
-    .then(({rows})=>{
-        const properties=rows;
-        let doesPropertyExist = false;
-        properties.forEach((property)=>{
-            if(property.property_id==review.property_id){
-                doesPropertyExist = true};
-        })
-        if(!doesPropertyExist){
-            return Promise.reject({status: 404, msg: 'property_id does not exist, review cannot be posted'});
-        }
         return db.query (
             format(
                 `INSERT into reviews (user_id,property_id,rating,comment) VALUES (%L) RETURNING *`,
                 [review.user_id,review.property_id,review.rating,review.comment])
             )
-        })
         .then(({rows})=>{
             return rows;
-        })
-        .catch((err)=>{
-            return Promise.reject(err);
         })
 };
 
@@ -115,9 +73,6 @@ function removePropertyReview(review_id){
                 reviews
             WHERE
                 review_id = %L;`,review_id))
-    })
-    .catch((err)=>{
-        return Promise.reject(err);
     })
 };
 module.exports = {fetchPropertyReviews, insertPropertyReviewFromApp, removePropertyReview};

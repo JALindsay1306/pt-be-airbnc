@@ -61,4 +61,14 @@ CREATE TABLE reviews (
     rating INT NOT NULL,
     comment VARCHAR NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT rating CHECK (rating >= 1 AND rating <= 5));`;
+    CONSTRAINT rating CHECK (rating >= 1 AND rating <= 5),
+    CONSTRAINT unique_user_property_review UNIQUE (user_id, property_id));`;
+
+exports.createImagesQuery = `
+CREATE TABLE images (
+    image_id SERIAL PRIMARY KEY,
+    property_id INT REFERENCES properties(property_id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+    image_url VARCHAR NOT NULL,
+    alt_tag VARCHAR NOT NULL
+    );`;

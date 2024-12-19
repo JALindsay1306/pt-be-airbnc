@@ -79,7 +79,6 @@ function fetchProperties (maxPrice,minPrice=0,sortBy,sortOrder,host_id) {
     .then(({ rows }) => {
         return rows;
       })
-    .catch(err => Promise.reject(err));
 };
 
 function fetchOneProperty(property_id){
@@ -125,9 +124,6 @@ function fetchOneProperty(property_id){
             return Promise.reject({status:404,msg:"Property does not exist"});
         }
         return rows[0];
-    })
-    .catch((err)=>{
-        return Promise.reject(err);
     })
 };
 

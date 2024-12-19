@@ -10,7 +10,9 @@
     "test-models": "jest models",
     "test-app": "jest app",
     "test": "jest",
-    "setup-dbs": "psql -f ./db/setup.sql"
+    "setup-dbs": "psql -f ./db/setup.sql",
+    "start": "node listen.js",
+    "seed-prod": "NODE_ENV=production npm run seed"
   },
   "keywords": [],
   "author": "",

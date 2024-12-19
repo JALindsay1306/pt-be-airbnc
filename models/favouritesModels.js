@@ -43,7 +43,7 @@ function insertFavouritesFromApp(favourites){
     })
     .then((result) => {
         return result; 
-    }).catch(err => Promise.reject(err));
+    })
 }
 
 function removeFavourite (favourite_id) {
@@ -53,9 +53,6 @@ function removeFavourite (favourite_id) {
             return Promise.reject({status: 404, msg:"favourite_id does not exist, cannot delete."})
         }
     return db.query(format('DELETE FROM favourites WHERE favourite_id = %L;',favourite_id))
-    })
-    .catch((err)=>{
-        return Promise.reject(err);
     })
 }
 

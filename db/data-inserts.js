@@ -63,4 +63,13 @@ function insertReviews(reviews){
         )
     )
 }
-module.exports = {insertUsers,insertPropertyTypes,insertProperties,insertFavourites,insertBookings,insertReviews};
+
+function insertImages(images){
+    return db.query(
+        format(
+            `INSERT into images (property_id,image_url,alt_tag) VALUES %L RETURNING *;`,
+            images.map(({property_id,image_url,alt_tag})=>[property_id,image_url,alt_tag])
+        )
+    )
+}
+module.exports = {insertImages,insertUsers,insertPropertyTypes,insertProperties,insertFavourites,insertBookings,insertReviews};

@@ -13,9 +13,6 @@ function fetchUsers (user_id) {
         }
         return rows;
     })
-    .catch((err)=>{
-        return Promise.reject((err));
-    })
 };
 
 function editUser (user_id, changes){
@@ -102,10 +99,6 @@ function editUser (user_id, changes){
     .then(({rows})=>{
         return rows;
     })
-    .catch((err)=>{
-        return Promise.reject(err);
-    })
-
 }
 
 module.exports = {fetchUsers, editUser};
