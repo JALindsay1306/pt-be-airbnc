@@ -47,6 +47,7 @@ function insertFavouritesFromApp(favourites){
 }
 
 function removeFavourite (favourite_id) {
+    if(isNaN(parseInt(favourite_id))){return Promise.reject({code: "22P02"})}
     return db.query(format('SELECT * FROM favourites WHERE favourite_id = %L;',favourite_id))
     .then(({rows})=>{
         if(rows.length===0){

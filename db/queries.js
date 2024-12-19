@@ -70,5 +70,6 @@ CREATE TABLE images (
     property_id INT REFERENCES properties(property_id)
     ON DELETE CASCADE ON UPDATE CASCADE,
     image_url VARCHAR NOT NULL,
-    alt_tag VARCHAR NOT NULL
+    alt_tag VARCHAR NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );`;

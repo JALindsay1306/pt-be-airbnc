@@ -4,6 +4,7 @@ const format = require("pg-format");
 
 function fetchPropertyReviews (property_id) {
     let average_rating;
+    if(isNaN(parseInt(property_id))){return Promise.reject({code: "22P02"})}
     return db.query('SELECT * FROM properties;')
     .then(({rows})=>{
         const properties=rows;

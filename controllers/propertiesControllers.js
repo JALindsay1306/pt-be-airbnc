@@ -22,7 +22,7 @@ function getSingleProperty (req,res,next) {
     const property_id = req.params.id;
     return fetchOneProperty(property_id)
     .then((properties)=>{
-        res.status(200).send({property: properties});
+        res.status(200).send(properties);
     })
     .catch((err)=>{
         next(err);

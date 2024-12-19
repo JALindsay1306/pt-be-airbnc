@@ -127,7 +127,19 @@ describe("app",()=>{
             });
         });
         test("returned properties have a property for the most recently added image",()=>{
-            
+            return request(app).get("/api/properties/?host_id=3")
+            .then(({body})=>{
+                body.properties.forEach((property)=>{
+                    expect(property).toHaveProperty("image");
+                    expect(property).toHaveProperty("alt_tag");
+                })
+            });
+        });
+        test("returns properties even if they have no images",()=>{
+            return request(app).get("/api/properties/?host_id=1&minprice=95&maxprice=105",)
+            .then(({body})=>{
+                expect(body.properties.length).toBe(1);
+            })
         })
         
     });
@@ -206,8 +218,15 @@ describe("app",()=>{
             .expect(404)
             .then(({body})=>{
                 expect(body.msg).toBe("favourite_id does not exist, cannot delete.")
+            });
+        });
+        test("if an invalid ID is requested, an error is returned",()=>{
+            return request(app).delete("/api/favourites/eggs")
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe("Invalid input, please check and try again");
             })
-        })
+        });
 
     })
     describe("GET/singleProperty",()=>{
@@ -246,6 +265,32 @@ describe("app",()=>{
             .then(({body})=>{
                 expect(body.msg).toBe("Property does not exist");
             });
+        });
+        test("returned property has a property for an array of images",()=>{
+            return request(app).get("/api/properties/3")
+            .then(({body})=>{
+                    expect(body.property).toHaveProperty("images");
+                    expect(Array.isArray(body.property.images)).toBe(true);
+                    body.property.images.forEach((image)=>{
+                        expect(typeof image).toBe("object");
+                        expect(image).toHaveProperty("image");
+                        expect(image).toHaveProperty("alt_tag");
+                    })
+                   
+                });
+        });
+        test("returns a property even if it doesn't have any images",()=>{
+            return request(app).get("/api/properties/11",)
+            .then(({body})=>{
+                expect(body.property.property_id).toBe(11);
+            })
+        });
+        test("if an invalid ID is requested, an error is returned",()=>{
+            return request(app).get("/api/properties/eggs")
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe("Invalid input, please check and try again");
+            })
         });
     })
     describe("GET/propertyReviews",()=>{
@@ -311,7 +356,14 @@ describe("app",()=>{
             .then(({body})=>{
                 expect(body.msg).toBe("No such property exists");
             })
-        })
+        });
+        test("if an invalid ID is requested, an error is returned",()=>{
+            return request(app).get("/api/properties/eggs/reviews")
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe("Invalid input, please check and try again");
+            })
+        });
     });
     describe("POST/propertyReviews",()=>{
         test("returns a status code of 201",()=>{

@@ -20,13 +20,24 @@ function fetchProperties (maxPrice,minPrice=0,sortBy,sortOrder,host_id) {
         sortOrder = "DESC";
     }
     let queryText = `
+    WITH RecentImages AS (
+        SELECT 
+        property_id, 
+        image_url, 
+        alt_tag,
+        ROW_NUMBER() OVER (PARTITION BY property_id ORDER BY created_at DESC) AS rn
+    FROM 
+        images
+    )
     SELECT 
         properties.property_id, 
         properties.name AS property_name, 
         property_types.property_type, 
         properties.location, 
         properties.price_per_night, 
-        CONCAT(users.first_name, ' ', users.surname) AS host
+        CONCAT(users.first_name, ' ', users.surname) AS host,
+        COALESCE(RecentImages.image_url, 'default_image_url_here') AS image,
+        COALESCE(RecentImages.alt_tag, 'No image available') AS alt_tag
     FROM 
         properties
     INNER JOIN 
@@ -37,10 +48,14 @@ function fetchProperties (maxPrice,minPrice=0,sortBy,sortOrder,host_id) {
         property_types 
     ON 
         properties.property_type_id = property_types.property_type_id
-    JOIN 
+    LEFT JOIN 
         favourites 
     ON 
         favourites.property_id = properties.property_id
+    LEFT JOIN
+        RecentImages
+    ON
+        properties.property_id = RecentImages.property_id AND RecentImages.rn = 1
     WHERE 
     `
     if (maxPrice){
@@ -63,7 +78,9 @@ function fetchProperties (maxPrice,minPrice=0,sortBy,sortOrder,host_id) {
         properties.property_id,
         property_types.property_type,
         users.first_name,
-        users.surname
+        users.surname,
+        RecentImages.image_url,
+        RecentImages.alt_tag
     `
     if(sortBy === "price_per_night"){
         queryText+=`
@@ -82,6 +99,7 @@ function fetchProperties (maxPrice,minPrice=0,sortBy,sortOrder,host_id) {
 };
 
 function fetchOneProperty(property_id){
+        let returnedProperty = {};
         return db.query(format(`
         SELECT 
             properties.property_id, 
@@ -123,7 +141,19 @@ function fetchOneProperty(property_id){
         if(rows.length===0){
             return Promise.reject({status:404,msg:"Property does not exist"});
         }
-        return rows[0];
+        returnedProperty.property = {...rows[0]};
+        return db.query(format(`
+            SELECT
+            image_url AS image,
+            alt_tag
+            FROM
+            images
+            WHERE
+            property_id = %L;`,property_id))
+    })
+    .then(({rows})=>{
+        returnedProperty.property.images = [...rows];
+        return returnedProperty;
     })
 };
 
