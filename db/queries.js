@@ -39,6 +39,9 @@ CREATE TABLE favourites (
     property_id INT REFERENCES properties(property_id)
     ON DELETE CASCADE ON UPDATE CASCADE);`;
 
+exports.installGist = `
+CREATE EXTENSION IF NOT EXISTS btree_gist;`
+
 exports.createBookingsQuery = `
 CREATE TABLE bookings (
     booking_id SERIAL PRIMARY KEY,
@@ -48,7 +51,12 @@ CREATE TABLE bookings (
     ON DELETE CASCADE ON UPDATE CASCADE,
     check_in_date DATE NOT NULL,
     check_out_date DATE NOT NULL,
-    CONSTRAINT check_dates CHECK (check_out_date > check_in_date)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT check_dates CHECK (check_out_date > check_in_date),
+    EXCLUDE USING gist (
+    property_id WITH =,
+    daterange(check_in_date, check_out_date, '[)') WITH &&
+    )
     );`;
 
 exports.createReviewsQuery = `

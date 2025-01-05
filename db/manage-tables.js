@@ -7,6 +7,7 @@ const {
     createBookingsQuery,
     createReviewsQuery,
     createImagesQuery,
+    installGist,
 } = require("./queries");
 
 async function manageTables() {
@@ -21,10 +22,10 @@ async function manageTables() {
     await db.query(`DROP TABLE IF EXISTS properties;`);
 
     await db.query(`DROP TABLE IF EXISTS property_types;`);
-
+    
+    await db.query(`DROP TABLE IF EXISTS bookings;`)
+    
     await db.query(`DROP TABLE IF EXISTS users CASCADE;`);
-
-    await db.query(`DROP TABLE IF EXISTS images;`)
 
     await db.query(createusersQuery);
 
@@ -33,6 +34,8 @@ async function manageTables() {
     await db.query(createPropertiesQuery);
 
     await db.query(createFavouritesQuery);
+
+    await db.query(installGist);
 
     await db.query(createBookingsQuery);
 

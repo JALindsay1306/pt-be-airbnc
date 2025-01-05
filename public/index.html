@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirBNC API Documentation</title>
+</head>
+<body>
+    <header>
+        <h1>AirBNC</h1>
+    </header>
+    <main>
+        <p>All you need to know about interacting with the AirBNC API</p>
+        <div>
+            <h2>Information</h2>
+            <p>This API facilitates the management of properties, both for guests and hosts, 
+            endpoints are provided to interact with elements of the data, including properties,
+            users, reviews and bookings.
+            </p>
+        </div>
+        <div>
+            <h2>Getting Started</h2>
+            <p>All endpoints are accessible through the base URL, which is:
+                <a href="https://jl-air-bnc.onrender.com/api">jl-air-bnc.onrender.com/api</a>
+            </p>
+        </div>
+        <div>
+            <h2>Endpoints</h2>
+            <div>
+                <h3>Properties</h3>
+                    <h4>Get /api/properties</h4>
+                        <p>Returns a list of all properties in the database.<br>
+                            This is defaulted to being ordered by the property with the most favourites at the top.</p>
+                        <h5>Optional Parameters</h5>
+                            <ul>
+                                <li>
+                                    <b>sortBy</b><br> Sort properties by one of the following: 
+                                    <ol><li>price_per_night</li>
+                                        <li>location</li>
+                                        <li>favourites</li>
+                                    </ol>
+                                </li>
+                                <li>
+                                    <b>order</b><br> Specify whether the sorting is done in ascending order (ASC) or descending order (DESC) - <i>accepts "ASC" or "DESC"</i>
+                                </li>
+                                <li>
+                                    <b>maxPrice</b><br> Specify a maximum price for returned properties, can be used in conjuction with minPrice - <i>accepts any valid number</i>
+                                </li>
+                                <li>
+                                    <b>minPrice</b><br> Specify a minimum price for returned properties, can be used in conjuction with maxPrice - <i>accepts any valid number</i>
+                                </li>
+                                <li>
+                                    <b>host_id</b><br> Only returns properties attached to a given host - <i>accepts any valid number</i>
+                                </li>
+                            </ul>
+                            <p>Optional parameters are case sensitive. Example usage: <b><a href="https://jl-air-bnc.onrender.com/api/properties/?sortBy=price_per_night&order=DESC&minPrice=100&maxPrice=200&host_id=1" target="_blank">https://jl-air-bnc.onrender.com/api/properties/?sortBy=price_per_night&order=DESC&minPrice=100&maxPrice=200&host=1</a></b>
+                            </p>
+                        <h5>Response</h5>
+                            <p>A successful response will return an array of properties, with the following format:</p>
+                            <pre><code>
+    {
+        "properties": [
+                    {
+                        "property_id": &lt;id&gt;,
+                        "property_name": &lt;name&gt;,
+                        "location": &lt;location&gt;,
+                        "price_per_night": &lt;price&gt;,
+                        "host": &lt;host name&gt;,
+                        "image": &lt;Most recent image&lt;,
+                        "alt_tag": &lt;alt_tag&lt;
+                    },
+                    ...
+        ]
+    }
+                        </code></pre>
+                        <h5>Status codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li>
+                                
+                            </ul>
+                        <h5>Example Request</h5>
+                            <pre><code>GET /api/properties/?sortBy=price_per_night&order=DESC&minPrice=100&maxPrice=200&host=1</code></pre>
+                        <h5>Example Response</h5>
+                            <pre><code>
+    {
+        "properties": [
+                        {
+                        "property_id": 11,
+                        "property_name": "Bright and Airy Studio",
+                        "property_type": "Studio",
+                        "location": "Cambridge, UK",
+                        "price_per_night": 100,
+                        "host": "Alice Johnson",
+                        "image": "https://images.unsplash.com/photo-1471086569966-db3eebc25a59?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        "alt_tag": "Plant cutting in a clear glass vase filled with water."
+                        },
+                        {
+                        "property_id": 1,
+                        "property_name": "Modern Apartment in City Center",
+                        "property_type": "Apartment",
+                        "location": "London, UK",
+                        "price_per_night": 120,
+                        "host": "Alice Johnson",
+                        "image": "https://images.unsplash.com/photo-1502672023488-70e25813eb80?q=80&w=3000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        "alt_tag": "Minimalist living room with wooden furniture, potted plants, a wall-mounted TV and bookshelves."
+                        },
+                        {
+                        "property_id": 2,
+                        "property_name": "Cosy Family House",
+                        "property_type": "House",
+                        "location": "Manchester, UK",
+                        "price_per_night": 150,
+                        "host": "Alice Johnson",
+                        "image": "https://images.unsplash.com/photo-1613545325268-9265e1609167?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        "alt_tag": "Modern minimalist living room with stone fireplace, large windows, and neutral furnishings."
+                        }
+                    ]
+                            </code></pre>
+
+                    <h4>GET /api/properties/:id</h4>
+                        <p>Returns a single property of the id requested</p>
+                        <p>The parameter :id is to be replaced with a valid property id (positive integer) which matches an existing property.</p>
+                        <h5>Optional Parameters</h5>
+                        <h5>Response</h5>
+                            <p>A successful response will return a single property, with the following format:</p>
+                        <pre><code>
+{
+    "property": {
+                    "property_id": &lt;id&gt;,
+                    "property_name": &lt;name&gt;,
+                    "location": &lt;location&gt;,
+                    "price_per_night": &lt;price&gt;,
+                    "description": &lt;description&lt;,
+                    "host": &lt;host name&gt;,
+                    "favourite count": &lt;count&gt;
+                    "images": &lt;[
+                    {
+                        "image": &lt;image_url&lt;,
+                        "alt_tag": &lt;alt_tag&lt;
+                    }]&lt;
+                },
+}
+                    </code></pre>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, the requested property will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: It is likely that the id requested was not valid (eg. not a number)</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent property_id is requested, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                            <pre><code>GET /api/properties/2</code></pre>
+                        <h5>Example Response</h5>
+                        <pre><code>
+{
+    "property": {
+                    "property_id": 2,
+                    "property_name": "Cosy Family House",
+                    "property_type": "House",
+                    "location": "Manchester, UK",
+                    "price_per_night": 150,
+                    "description": "A spacious home perfect for families looking to explore the city.",
+                    "host": "Alice Johnson",
+                    "host_avatar": "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    "favourite_count": "0",
+                    "images": [
+                    {
+                        "image": "https://images.unsplash.com/photo-1613545325268-9265e1609167?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        "alt_tag": "Modern minimalist living room with stone fireplace, large windows, and neutral furnishings."
+                    },
+                    {
+                        "image": "https://images.unsplash.com/photo-1613545325278-f24b0cae1224?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        "alt_tag": "Contemporary living room with a stone fireplace, neutral-tone furniture, and grey flooring."
+                    },
+                    {
+                        "image": "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        "alt_tag": "Freestanding oval bathtub surrounded by pebbles and a tropical plant."
+                    },
+                    {
+                        "image": "https://images.unsplash.com/photo-1471086569966-db3eebc25a59?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        "alt_tag": "Plant cutting in a clear glass vase filled with water."
+                    }
+                    ]
+                }
+}
+                        </code></pre>
+            </div>
+            <div>
+                <h3>Users</h3>
+                    <h4>GET /api/users/:id</h4>
+                        <p>Returns one user with the id requested</p>
+                        <p>The parameter :id is to be replaced with a valid user id (positive integer) which matches an existing user.</p>
+                        <h5>Response</h5>
+                            <p>A successful response will return a single user, with the following format:</p>
+                            <pre><code>
+{
+    "user": {
+                "user_id": &lt;id&gt;,
+                "first_name": &lt;name&gt;,
+                "surname": &lt;name&gt;,
+                "email": &lt;email&gt;,
+                "phone_number": &lt;number&lt;,
+                "role": &lt;host or guest&gt;,
+                "avatar": &lt;image url&gt;
+                "created_at": &lt;date&lt;
+            },
+}
+                    </code></pre>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, the requested user will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: It is likely that the id requested was not valid (eg. not a number)</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent user_id is requested, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                            <pre><code>GET /api/users/2</code></pre>
+                        <h5>Example Response</h5>
+                            <pre><code>
+{
+        "user": {
+                    "user_id": 2,
+                    "first_name": "Bob",
+                    "surname": "Smith",
+                    "email": "bob@example.com",
+                    "phone_number": "+44 7000 222222",
+                    "role": "guest",
+                    "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    "created_at": "2024-12-20T14:13:28.808Z"
+                }
+}
+                            </code></pre>
+                    <h4>PATCH /api/users/:id</h4>
+                        <p>Edits a single user with passed information</p>
+                        <p>The parameter :id is to be replaced with a valid user id (positive integer) which matches an existing property.</p>
+                        <h5>Required Input</h5>
+                            <p>A request body is required with any combination of the following:</p>
+                            <pre><code>
+{
+        "first_name": &lt;name&lt;,
+        "surname": &lt;name&lt;,
+        "email": &lt;email&lt;,
+        "phone_number": &lt;number&lt;,
+        "role": &lt;host or guest&lt;,
+        "avatar": &lt;image url&lt;
+}
+                            </code></pre>
+                        <h5>Response</h5>
+                            <p>A successful response will return the edited user, with the following format:</p>
+                        <pre><code>
+{
+"user": {
+            "user_id": &lt;id&gt;,
+            "first_name": &lt;name&gt;,
+            "surname": &lt;name&gt;,
+            "email": &lt;email&gt;,
+            "phone_number": &lt;number&lt;,
+            "role": &lt;host or guest&gt;,
+            "avatar": &lt;image url&gt;
+            "created_at": &lt;date&lt;
+        },
+}
+                </code></pre>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-201">201 OK: User successfully edited, the user will be returned after changes.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent user_id is used in the optional user_id parameter, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                            <pre><code>PATCH /api/users/2
+                                {first_name:"Fred"}
+                            </code></pre>
+                            <h5>Example Response</h5>
+                            <pre><code>
+{
+        "user": {
+                    "user_id": 2,
+                    "first_name": "Fred",
+                    "surname": "Smith",
+                    "email": "bob@example.com",
+                    "phone_number": "+44 7000 222222",
+                    "role": "guest",
+                    "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    "created_at": "2024-12-20T14:13:28.808Z"
+                }
+}
+                            </code></pre>
+            </div>
+            <div>
+                <h3>Bookings</h3>
+                    <h4>POST /api/properties/:id/booking</h4>
+                        <p>Creates a booking for a given property using passed information</p>
+                        <p>The parameter :id is to be replaced with a valid user id (positive integer) which matches an existing property.</p>
+                        <h5>Required Input</h5>
+                            <p>A request body is required with every one of the following:</p>
+                            <pre><code>
+{
+        "guest_id": &lt;id&lt;,
+        "check_in_date": &lt;date&lt;,
+        "check_out_date": &lt;date&lt;,
+}
+                            </code></pre>
+                        <h5>Response</h5>
+                            <p>A successful response will return the created booking, with the following format:</p>
+                        <pre><code>
+{
+            "msg": "Booking successful",
+            "booking_id": &lt;id&gt;
+}
+                        </code></pre>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-201">201 OK: Booking created successfully, the id of the booking will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid or information was missing, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent property_id is used in the URL id parameter, this will be the result.</div></li> 
+                            </ul>
+                            <h5>Example Request</h5>
+                            <pre><code>
+POST /api/properties/2/booking
+{guest_id:2,check_in_date:"2025-02-15",check_out_date:"2025-02-18"}
+                        </code></pre>
+                        <h5>Example Response</h5>
+                        <pre><code>
+{
+            "msg": "Booking successful",
+            "booking_id": 37
+}
+                        </code></pre>
+                    <h4>GET /api/properties/:id/bookings</h4>
+                        <p>Returns a list of bookings for a given property.</p>
+                        <p>The parameter :id is to be replaced with a valid user id (positive integer) which matches an existing property.</p>
+                        <h5>Response</h5>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, any bookings against the requested property will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: The requested property_id was not valid (eg. not a number).</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                        <h5>Example Response</h5>
+                    <h4></h4>
+                        <p></p>
+                        <p></p>
+                        <h5>Optional Parameters</h5>
+                        <h5>Response</h5>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                        <h5>Example Response</h5>
+                    <h4></h4>
+                        <p></p>
+                        <p></p>
+                        <h5>Optional Parameters</h5>
+                        <h5>Response</h5>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                        <h5>Example Response</h5>
+                        <h4></h4>
+                        <p></p>
+                        <p></p>
+                        <h5>Optional Parameters</h5>
+                        <h5>Response</h5>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                            <pre><code>
+POST /api/properties/2/booking
+{guest_id:2,check_in_date:"2025-02-15",check_out_date:"2025-02-18"}
+                        </code></pre>
+                        <h5>Example Response</h5>
+                        <pre><code>
+{
+            "msg": "Booking successful",
+            "booking_id": 37
+}
+                        </code></pre>
+            </div>
+            <div>
+                <h3>Reviews</h3>
+                    <h4></h4>
+                        <p></p>
+                        <p></p>
+                        <h5>Optional Parameters</h5>
+                        <h5>Response</h5>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                        <h5>Example Response</h5>
+                    <h4></h4>
+                        <p></p>
+                        <p></p>
+                        <h5>Optional Parameters</h5>
+                        <h5>Response</h5>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                        <h5>Example Response</h5>
+                    <h4></h4>
+                        <p></p>
+                        <p></p>
+                        <h5>Optional Parameters</h5>
+                        <h5>Response</h5>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                        <h5>Example Response</h5>
+            </div>
+            <div>
+                <h3>Favourites</h3>
+                    <h4></h4>
+                        <p></p>
+                        <p></p>
+                        <h5>Optional Parameters</h5>
+                        <h5>Response</h5>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                        <h5>Example Response</h5>
+                    <h4></h4>
+                        <p></p>
+                        <p></p>
+                        <h5>Optional Parameters</h5>
+                        <h5>Response</h5>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                        <h5>Example Response</h5>
+            </div>
+        </div>
+    </main>
+    
+</body>
+</html>

@@ -1,0 +1,24 @@
+const express = require("express");
+const { handleMissingInputDataError, handleBookingClash, handleValidNonExistentIDError,handleDuplicateError,handleInvalidInputError, handlePathNotFound,handleCustomError, handleMissingDataError, handleOutOfConstraintError} = require("../errors/handleErrors");
+const apiRouter = require("../routing/api.router");
+const app = express();
+app.use(express.json()); 
+
+
+app.use("/api",apiRouter);
+
+app.all("/*",handlePathNotFound)
+
+app.use(handleMissingDataError);
+app.use(handleOutOfConstraintError);
+app.use(handleInvalidInputError);
+app.use(handleDuplicateError);
+app.use(handleValidNonExistentIDError);
+app.use(handleBookingClash);
+app.use(handleMissingInputDataError);
+app.use(handleCustomError);
+
+
+
+
+module.exports = app;
