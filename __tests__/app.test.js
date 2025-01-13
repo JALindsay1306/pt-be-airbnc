@@ -798,8 +798,9 @@ describe("app",()=>{
                     .expect(200);
                 });
                 test("returns an object with a property of bookings, which contains an array of objects",()=>{
-                    return request(app).get("/api/properties/1/bookings")
+                    return request(app).get("/api/properties/3/bookings")
                     .then(({body})=>{
+                        console.log(body)
                         expect(Array.isArray(body.bookings)).toBe(true);
                         body.bookings.forEach((booking)=>{
                             expect(typeof booking).toBe("object");

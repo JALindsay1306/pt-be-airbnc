@@ -4,12 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AirBNC API Documentation</title>
+    <link rel="stylesheet" href = "style.css">
 </head>
 <body>
     <header>
         <h1>AirBNC</h1>
     </header>
-    <main>
+    <div class="container">
+        <!-- Side Navigation Bar -->
+        <nav class="sidebar">
+          <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#endpoints">Endpoints</a>
+                <ul>
+                    <li>1</li>
+                    <li>2</li>
+                </ul></li>
+            <li><a href="#authentication">Authentication</a></li>
+            <li><a href="#errors">Error Codes</a></li>
+          </ul>
+        </nav>
+      
+        <!-- Main Content -->
+    <main class="content">
+        <section id="introduction">
         <p>All you need to know about interacting with the AirBNC API</p>
         <div>
             <h2>Information</h2>
@@ -18,15 +36,16 @@
             users, reviews and bookings.
             </p>
         </div>
-        <div>
+        </section>
+        <section id = "getting-started">
             <h2>Getting Started</h2>
             <p>All endpoints are accessible through the base URL, which is:
                 <a href="https://jl-air-bnc.onrender.com/api">jl-air-bnc.onrender.com/api</a>
             </p>
-        </div>
-        <div>
+        </section>
+        <section id="endpoints">
             <h2>Endpoints</h2>
-            <div>
+            <div class = "type">
                 <h3>Properties</h3>
                     <h4>Get /api/properties</h4>
                         <p>Returns a list of all properties in the database.<br>
@@ -117,6 +136,7 @@
                         "alt_tag": "Modern minimalist living room with stone fireplace, large windows, and neutral furnishings."
                         }
                     ]
+                    }
                             </code></pre>
 
                     <h4>GET /api/properties/:id</h4>
@@ -329,8 +349,19 @@ POST /api/properties/2/booking
                         </code></pre>
                     <h4>GET /api/properties/:id/bookings</h4>
                         <p>Returns a list of bookings for a given property.</p>
-                        <p>The parameter :id is to be replaced with a valid user id (positive integer) which matches an existing property.</p>
+                        <p>The parameter :id is to be replaced with a valid property id (positive integer) which matches an existing property.</p>
                         <h5>Response</h5>
+                            <p>A successful response will return an array of bookings, arranged from latest check_out_date to earliest, with the following format:</p>
+                            <pre><code>
+{
+    "user": {
+                "booking_id": &lt;id&gt;,
+                "check_in_date": &lt;date&gt;,
+                "check_out_date": &lt;date&gt;,
+                "created_at": &lt;date&gt;,
+            },
+}
+                            </code></pre>
                         <h5>Status Codes</h5>
                             <ul>
                                 <li><div class="status-box status-200">200 OK: Request successful, any bookings against the requested property will be returned.</div></li>
@@ -338,129 +369,248 @@ POST /api/properties/2/booking
                                 <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
                             </ul>
                         <h5>Example Request</h5>
+                            <pre><code>GET /api/properties/3/bookings
+                            </code></pre>
                         <h5>Example Response</h5>
-                    <h4></h4>
-                        <p></p>
-                        <p></p>
-                        <h5>Optional Parameters</h5>
-                        <h5>Response</h5>
+                            <pre><code>
+{
+    bookings: [
+                {
+                    booking_id: 3,
+                    check_in_date: '2025-12-12',
+                    check_out_date: '2025-12-14',
+                    created_at: '2025-01-05T20:14:37.648Z'
+                },
+                {
+                    booking_id: 15,
+                    check_in_date: '2026-02-12',
+                    check_out_date: '2026-02-15',
+                    created_at: '2025-01-05T20:14:38.215Z'
+                    }
+    ],
+    property_id: 3
+    }
+                            </code></pre>
+                    <h4>PATCH /api/bookings/:id</h4>
+                    <p>Edits a booking with given information. The edited booking is returned with changes made.</p>
+                    <p>The parameter :id is to be replaced with a valid booking id (positive integer) which matches an existing booking.</p>
+                    <h5>Required Input</h5>
+                        <p>A request body is required with one or both of the following:</p>
+                        <pre><code>
+    {
+    "check_in_date": &lt;date&lt;,
+    "check_out_date": &lt;date&lt;,
+    }
+                        </code></pre>
+                    <h5>Response</h5>
+                        <p>A successful response will return the edited booking, with the following format:</p>
+                        <pre><code>
+    {
+    "user": {
+            "booking_id": &lt;id&gt;,
+            "check_in_date": &lt;date&gt;,
+            "check_out_date": &lt;date&gt;,
+            "created_at": &lt;date&gt;,
+        },
+    }
+                        </code></pre>
                         <h5>Status Codes</h5>
                             <ul>
-                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-200">201 OK: Edit successful, the booking has been successfully updated and will be returned.</div></li>
                                 <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
-                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
-                            </ul>
-                        <h5>Example Request</h5>
-                        <h5>Example Response</h5>
-                    <h4></h4>
-                        <p></p>
-                        <p></p>
-                        <h5>Optional Parameters</h5>
-                        <h5>Response</h5>
-                        <h5>Status Codes</h5>
-                            <ul>
-                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
-                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
-                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
-                            </ul>
-                        <h5>Example Request</h5>
-                        <h5>Example Response</h5>
-                        <h4></h4>
-                        <p></p>
-                        <p></p>
-                        <h5>Optional Parameters</h5>
-                        <h5>Response</h5>
-                        <h5>Status Codes</h5>
-                            <ul>
-                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
-                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
-                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                                <li><div class="status-box status-404">404 Not Found: If a non existent booking_id is used in the optional host_id parameter, this will be the result.</div></li> 
                             </ul>
                         <h5>Example Request</h5>
                             <pre><code>
-POST /api/properties/2/booking
-{guest_id:2,check_in_date:"2025-02-15",check_out_date:"2025-02-18"}
-                        </code></pre>
-                        <h5>Example Response</h5>
-                        <pre><code>
+PATCH /api/bookings/3
 {
-            "msg": "Booking successful",
-            "booking_id": 37
+    "check_in_date": "2025-12-12",
 }
-                        </code></pre>
+
+                            </code></pre>
+                        <h5>Example Response</h5>
+                            <pre><code>
+{
+    booking_id: 3,
+    check_in_date: '2025-12-12',
+    check_out_date: '2025-12-14',
+    created_at: '2025-01-05T20:14:37.648Z'
+},
+                            </code></pre>
+                    <h4>DELETE /api/bookings/:id</h4>
+                        <p>Removes a booking row from the bookings table.</p>
+                        <p>The parameter :id is to be replaced with a valid booking id (positive integer) which matches an existing booking.</p>
+                        <h5>Response</h5>
+                            <p>If successful, There will be no response beyond a status code of 204</p>
+                        <h5>Status Codes</h5>
+                            <ul>
+                                <li><div class="status-box status-204">204 OK: Request successful, the booking has been deleted.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: The booking id given was not valid (e.g. not a number).</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent booking_id is given, this will be the result.</div></li> 
+                            </ul>
+                        <h5>Example Request</h5>
+                            <pre><code>DELETE /api/bookings/4</code></pre>
+                        <h5>Example Response</h5>
+                            <pre><code>[no body]</pre></code>
             </div>
             <div>
                 <h3>Reviews</h3>
-                    <h4></h4>
-                        <p></p>
-                        <p></p>
-                        <h5>Optional Parameters</h5>
+                    <h4>GET /api/properties/:id/reviews</h4>
+                        <p>Returns reviews against the requested property id</p>
+                        <p>The parameter :id is to be replaced with a valid property id (positive integer) which matches an existing property.</p>
                         <h5>Response</h5>
+                            <p>A successful response will return an array of reviews, ordered from latest to oldest, along with an average of all ratings, with the following format:</p>
+                            <pre><code>
+{
+    "reviews": [
+                    {
+                        "review_id": &lt;id&gt;,
+                        "comment": &lt;text&gt;,
+                        "rating": &lt;Number between 1 and 5&gt;,
+                        "created_at": &lt;date&gt;,
+                        "guest": &lt;guest name&lt;,
+                        "guest_avatar": &lt;image URL&lt;
+                    },
+                    ...
+                ],
+                "average rating": &lt;average of ratings&lt;
+            
+}
+                        </code></pre>
                         <h5>Status Codes</h5>
                             <ul>
-                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
-                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
-                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                                <li><div class="status-box status-200">200 OK: Request successful, any reviews for this property will be returned.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: The requested property id was invalid (eg. not a number), the returned error message should give more information.</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent property_id is given, this will be the result.</div></li> 
                             </ul>
                         <h5>Example Request</h5>
+                            <pre><code>GET /api/properties/4/reviews</code></pre>
                         <h5>Example Response</h5>
-                    <h4></h4>
-                        <p></p>
-                        <p></p>
-                        <h5>Optional Parameters</h5>
+                    <h4>POST /api/properties/:id/reviews</h4>
+                        <p>Creates a review against a certain property with passed information</p>
+                        <p>The parameter :id is to be replaced with a valid property id (positive integer) which matches an existing property.</p>
+                        <h5>Required Input</h5>
+                            <p>A request body is required with every one of the following:</p>
+                            <pre><code>
+{
+        "guest_id": &lt;id&lt;,
+        "rating": &lt;number between 1 and 5&lt;,
+        "comment": &lt;text&lt;,
+}
+                            </code></pre>
                         <h5>Response</h5>
+                            <p>A successful post will return the created review, in the following format:</p>
+                            <pre><code>
+{
+        "review_id": &lt;id&lt;,
+        "property_id": &lt;id&lt;,
+        "guest_id": &lt;id&lt;,
+        "rating": &lt;number between 1 and 5&lt;,
+        "comment": &lt;text&lt;,
+        "created_at": &lt;date&lt;
+}
+                            </code></pre>
                         <h5>Status Codes</h5>
                             <ul>
-                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-201">200 OK: Request successful, the review has been created and will be returned.</div></li>
                                 <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
-                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                                <li><div class="status-box status-404">404 Not Found: If a non existent property_id or guest_id is used in the input, this will be the result.</div></li> 
                             </ul>
                         <h5>Example Request</h5>
+                            <pre><code>
+POST /api/properties/3/reviews
+{
+    "guest_id": 5,
+    "rating": 3,
+    "comment": "It was pretty bad, but I don't want to get sued."
+}
+                            </code></pre>
                         <h5>Example Response</h5>
-                    <h4></h4>
-                        <p></p>
-                        <p></p>
-                        <h5>Optional Parameters</h5>
+                        <pre><code>
+{
+    review: {
+                "review_id": 75,
+                "property_id": 3,
+                "guest_id": 5,
+                "rating": 3,
+                "comment": "It was pretty bad, but I don't want to get sued",
+                "created_at": "1956-02-02";
+    }
+}
+                        </code></pre>
+                    <h4>DELETE /api/reviews/:id</h4>
+                        <p>Removes a given review from the database</p>
+                        <p>The parameter :id is to be replaced with a valid review id (positive integer) which matches an existing review.</p>
                         <h5>Response</h5>
+                            <p>If successful, There will be no response beyond a status code of 204</p>
                         <h5>Status Codes</h5>
                             <ul>
-                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
-                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
-                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                                <li><div class="status-box status-204">204 OK: Request successful, the review has been deleted.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: The review id given was not valid (e.g. not a number).</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent review_id is given, this will be the result.</div></li> 
                             </ul>
                         <h5>Example Request</h5>
+                            <pre><code>DELETE /api/reviews/24</code></pre>
                         <h5>Example Response</h5>
+                            <p>[no body]</p>
             </div>
             <div>
                 <h3>Favourites</h3>
-                    <h4></h4>
-                        <p></p>
-                        <p></p>
-                        <h5>Optional Parameters</h5>
+                    <h4>POST /api/properties/:id/favourites</h4>
+                        <p>Creates a favourite for the given property with a passed guest_id</p>
+                        <p>The parameter :id is to be replaced with a valid property id (positive integer) which matches an existing property.</p>
+                        <h5>Required Input</h5>
+                            <p>A request body is required with every one of the following:</p>
+                            <pre><code>
+{
+        "guest_id": &lt;id&lt;,
+}
+                            </code></pre>
                         <h5>Response</h5>
+                            <p>A successful post will return a confirmation message and favourite_id, in the following format:</p>
+                            <pre><code>
+{
+        "msg": "Property favourited successfully",
+        "favourite_id": &lt;id&lt;
+}
+                            </code></pre>
                         <h5>Status Codes</h5>
                             <ul>
-                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
+                                <li><div class="status-box status-201">200 OK: Request successful, the favourite has been created and will be returned.</div></li>
                                 <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
-                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                                <li><div class="status-box status-404">404 Not Found: If a non existent property_id or guest_id is used in the input, this will be the result.</div></li> 
                             </ul>
                         <h5>Example Request</h5>
+                            <pre><code>
+POST /api/properties/3/favourites
+{
+    "guest_id": 5,
+}
+                            </code></pre>
                         <h5>Example Response</h5>
-                    <h4></h4>
-                        <p></p>
-                        <p></p>
-                        <h5>Optional Parameters</h5>
+                        <pre><code>
+{
+    "msg": "Property favourited successfully",
+    "favourite_id": 31,
+}
+                        </code></pre>
+                    <h4>DELETE /api/favourites/:id</h4>
+                        <p>Removes a given favourite from the database</p>
+                        <p>The parameter :id is to be replaced with a valid favourite id (positive integer) which matches an existing favourite.</p>
                         <h5>Response</h5>
+                            <p>If successful, There will be no response beyond a status code of 204</p>
                         <h5>Status Codes</h5>
                             <ul>
-                                <li><div class="status-box status-200">200 OK: Request successful, any properties matching criteria will be returned.</div></li>
-                                <li><div class="status-box status-400">400 Bad Request: Some part of the passed parameters were invalid, the returned error message should give more information.</div></li>
-                                <li><div class="status-box status-404">404 Not Found: If a non existent host_id is used in the optional host_id parameter, this will be the result.</div></li> 
+                                <li><div class="status-box status-204">204 OK: Request successful, the favourite has been deleted.</div></li>
+                                <li><div class="status-box status-400">400 Bad Request: The favourite id given was not valid (e.g. not a number).</div></li>
+                                <li><div class="status-box status-404">404 Not Found: If a non existent favourite_id is given, this will be the result.</div></li> 
                             </ul>
                         <h5>Example Request</h5>
+                            <pre><code>DELETE /api/favourites/24</code></pre>
                         <h5>Example Response</h5>
+                            <p>[no body]</p>
             </div>
-        </div>
+        </section>
     </main>
     
 </body>
