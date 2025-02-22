@@ -23,6 +23,9 @@ function fetchBookings (property_id){
         bookings
         WHERE
         property_id = %L;`,property_id))
+    }).catch((err) => {
+        console.error(`Error in fetchBookings:`, err);
+        throw err;
     });
 };
 
