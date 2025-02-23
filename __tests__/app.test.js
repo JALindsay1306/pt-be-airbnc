@@ -15,7 +15,7 @@ afterAll(async () => {
 });
 
 describe("app",()=>{
-    describe("properties",()=>{
+    describe.only("properties",()=>{
         describe("GET/api/properties",()=>{
             describe("happy path",()=>{
                 test("returns a status code of 200",()=>{

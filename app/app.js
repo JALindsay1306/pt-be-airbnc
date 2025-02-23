@@ -1,9 +1,11 @@
 const express = require("express");
 const { handleMissingInputDataError, handleBookingClash, handleValidNonExistentIDError,handleDuplicateError,handleInvalidInputError, handlePathNotFound,handleCustomError, handleMissingDataError, handleOutOfConstraintError} = require("../errors/handleErrors");
 const apiRouter = require("../routing/api.router");
+const cors = require('cors');
 const app = express();
 app.use(express.json()); 
 
+app.use(cors());
 
 app.use("/api",apiRouter);
 
