@@ -15,7 +15,7 @@ afterAll(async () => {
 });
 
 describe("app",()=>{
-    describe.only("properties",()=>{
+    describe("properties",()=>{
         describe("GET/api/properties",()=>{
             describe("happy path",()=>{
                 test("returns a status code of 200",()=>{
@@ -1168,9 +1168,11 @@ describe("app",()=>{
         });
     });
     test("returns a 500 error if the database has incomplete data", async () => {
-            await db.query(`
+            message = await db.query(`
                 DROP TABLE IF EXISTS properties CASCADE;
             `);
+
+            console.log(message);
 
             return request(app).get("/api/properties").expect(500)
             .then(({body})=>{

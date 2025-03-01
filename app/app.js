@@ -9,7 +9,6 @@ app.use(cors());
 
 app.use("/api",apiRouter);
 
-app.all("/*",handlePathNotFound)
 
 app.use(handleMissingDataError);
 app.use(handleOutOfConstraintError);
@@ -20,7 +19,7 @@ app.use(handleBookingClash);
 app.use(handleMissingInputDataError);
 app.use(handleCustomError);
 
-
+app.all("/*",handlePathNotFound)
 
 
 module.exports = app;

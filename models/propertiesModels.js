@@ -1,7 +1,7 @@
 const format = require("pg-format");
 const db = require("../db/connection.js");
 
-function fetchProperties (maxPrice,minPrice=0,sortBy,sortOrder,host_id) {
+function fetchProperties (maxPrice,minPrice=0,sortBy,sortOrder,host_id,property_type) {
     if (maxPrice && !Number.isInteger(parseInt(maxPrice))) {
         return Promise.reject({status: 400, msg:'Invalid value for maxPrice. It must be an integer.' });
     }
@@ -72,6 +72,10 @@ function fetchProperties (maxPrice,minPrice=0,sortBy,sortOrder,host_id) {
     if(host_id){
         queryText+= format(`
              AND properties.user_id = %L`,host_id);
+    }
+    if(property_type){
+        queryText+= format(`
+            AND property_type= %L`,property_type);
     }
     queryText += `
     GROUP BY 
