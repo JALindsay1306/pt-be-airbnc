@@ -102,7 +102,10 @@ function fetchFavouritesByUser(user_id) {
                     RecentImages.alt_tag;
             `, user_id));
         })
-        .then(({ rows }) => rows);
+        .then(({ rows }) => rows)
+        .catch((err)=>{
+            console.log(err)
+        })
 }
 
 module.exports = {insertFavouritesFromApp,removeFavourite, fetchFavouritesByUser};
