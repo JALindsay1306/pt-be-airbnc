@@ -48,11 +48,35 @@ function fetchPropertyReviews (property_id) {
 };
 
 function insertPropertyReviewFromApp(review){
-        return db.query (
+        return db.query(
             format(
-                `INSERT into reviews (user_id,property_id,rating,comment) VALUES (%L) RETURNING *`,
-                [review.user_id,review.property_id,review.rating,review.comment])
+                `SELECT * FROM reviews WHERE user_id = %L AND property_id = %L;`,
+                review.user_id, review.property_id
             )
+        )
+        .then(({ rows }) => {
+            if (rows.length > 0) {
+                // If review exists, update it
+                return db.query(
+                    format(
+                        `UPDATE reviews 
+                         SET rating = %L, comment = %L, created_at = NOW()
+                         WHERE user_id = %L AND property_id = %L 
+                         RETURNING *;`,
+                        review.rating, review.comment, review.user_id, review.property_id
+                    )
+                );
+            } else {
+                // If no existing review, insert a new one
+                return db.query(
+                    format(
+                        `INSERT INTO reviews (user_id, property_id, rating, comment) 
+                         VALUES (%L, %L, %L, %L) RETURNING *;`, 
+                        review.user_id, review.property_id, review.rating, review.comment
+                    )
+                );
+            }
+        })
         .then(({rows})=>{
             return rows;
         })
