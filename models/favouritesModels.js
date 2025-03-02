@@ -57,4 +57,52 @@ function removeFavourite (favourite_id) {
     })
 }
 
-module.exports = {insertFavouritesFromApp,removeFavourite};
+function fetchFavouritesByUser(user_id) {
+    return db.query(format(`SELECT * FROM users WHERE user_id = %L`, user_id))
+        .then(({ rows }) => {
+            if (rows.length === 0) {
+                return Promise.reject({ code: "23503", detail: `Key (user_id)=(${user_id}) is not present in table \"users\".` });
+            }
+            return db.query(format(`
+                WITH RecentImages AS (
+                    SELECT 
+                        property_id, 
+                        image_url, 
+                        alt_tag,
+                        ROW_NUMBER() OVER (PARTITION BY property_id ORDER BY created_at DESC) AS rn
+                    FROM images
+                )
+                SELECT 
+                    properties.property_id, 
+                    properties.name AS property_name, 
+                    property_types.property_type, 
+                    properties.location, 
+                    properties.price_per_night, 
+                    CONCAT(users.first_name, ' ', users.surname) AS host,
+                    COALESCE(RecentImages.image_url, 'default_image_url_here') AS image,
+                    COALESCE(RecentImages.alt_tag, 'No image available') AS alt_tag
+                FROM 
+                    favourites
+                JOIN 
+                    properties ON favourites.property_id = properties.property_id
+                JOIN 
+                    users ON properties.user_id = users.user_id
+                JOIN 
+                    property_types ON properties.property_type_id = property_types.property_type_id
+                LEFT JOIN 
+                    RecentImages ON properties.property_id = RecentImages.property_id AND RecentImages.rn = 1
+                WHERE 
+                    favourites.user_id = %L
+                GROUP BY 
+                    properties.property_id, 
+                    property_types.property_type, 
+                    users.first_name, 
+                    users.surname, 
+                    RecentImages.image_url, 
+                    RecentImages.alt_tag;
+            `, user_id));
+        })
+        .then(({ rows }) => rows);
+}
+
+module.exports = {insertFavouritesFromApp,removeFavourite, fetchFavouritesByUser};

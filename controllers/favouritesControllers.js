@@ -1,4 +1,4 @@
-const  {insertFavouritesFromApp,removeFavourite}  = require("../models/favouritesModels");
+const  {insertFavouritesFromApp,removeFavourite, fetchFavouritesByUser}  = require("../models/favouritesModels");
 
 function postFavourite(req,res,next) {
     const user_id = req.body.guest_id;
@@ -25,4 +25,15 @@ function deleteFavourite(req,res,next){
     })
 }
 
-module.exports = {postFavourite,deleteFavourite};
+function getFavouritesByUser (req,res,next) {
+    const user_id = req.params.id
+    return fetchFavouritesByUser(user_id)
+    .then(({rows})=>{
+        return res.status(200).send({favourites:rows});    
+    })
+    .catch((err)=>{
+        next(err);
+    })
+    
+}
+module.exports = {postFavourite,deleteFavourite,getFavouritesByUser};

@@ -56,7 +56,6 @@ function insertPropertyReviewFromApp(review){
         )
         .then(({ rows }) => {
             if (rows.length > 0) {
-                // If review exists, update it
                 return db.query(
                     format(
                         `UPDATE reviews 
@@ -67,7 +66,6 @@ function insertPropertyReviewFromApp(review){
                     )
                 );
             } else {
-                // If no existing review, insert a new one
                 return db.query(
                     format(
                         `INSERT INTO reviews (user_id, property_id, rating, comment) 
