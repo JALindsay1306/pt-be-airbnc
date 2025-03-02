@@ -29,6 +29,7 @@ function getFavouritesByUser (req,res,next) {
     const user_id = req.params.id
     return fetchFavouritesByUser(user_id)
     .then(({rows})=>{
+        console.log('Favourites data:', rows)
         return res.status(200).send({favourites:rows});    
     })
     .catch((err)=>{
