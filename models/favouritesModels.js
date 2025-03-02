@@ -69,7 +69,7 @@ function fetchFavouritesByUser(user_id) {
                         property_id, 
                         image_url, 
                         alt_tag,
-                        ROW_NUMBER() OVER (PARTITION BY property_id ORDER BY created_at DESC) AS rn
+                        ROW_NUMBER() OVER (PARTITION BY property_id ORDER BY image_id DESC) AS rn
                     FROM images
                 )
                 SELECT 
