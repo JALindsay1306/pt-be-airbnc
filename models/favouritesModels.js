@@ -73,6 +73,7 @@ function fetchFavouritesByUser(user_id) {
                     FROM images
                 )
                 SELECT 
+                    favourite_id,
                     properties.property_id, 
                     properties.name AS property_name, 
                     property_types.property_type, 

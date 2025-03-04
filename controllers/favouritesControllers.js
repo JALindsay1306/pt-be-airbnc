@@ -27,10 +27,8 @@ function deleteFavourite(req,res,next){
 
 function getFavouritesByUser (req,res,next) {
     const user_id = req.params.id
-    console.log(user_id)
     return fetchFavouritesByUser(user_id)
     .then((favourites) => { 
-        console.log("Favourites data:", favourites);
         return res.status(200).send({ favourites });   
     })
     .catch((err)=>{
