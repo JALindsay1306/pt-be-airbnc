@@ -94,7 +94,8 @@ function fetchFavouritesByUser(user_id) {
                     RecentImages ON properties.property_id = RecentImages.property_id AND RecentImages.rn = 1
                 WHERE 
                     favourites.user_id = %L
-                GROUP BY 
+                GROUP BY
+                    favourite_id, 
                     properties.property_id, 
                     property_types.property_type, 
                     users.first_name, 
