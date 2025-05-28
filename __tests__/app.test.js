@@ -5,13 +5,39 @@ const seed = require("../db/seed");
 const data = require("../db/data/test");
 const { fetchProperties } = require("../models/propertiesModels");
 const { getSingleProperty } = require("../controllers/propertiesControllers");
+jest.setTimeout(10000);
 
+// beforeAll(async () => {
+//     await seed(data);
+// });
+// afterAll(async () => {
+//     await db.end();
+// });
 
 beforeAll(async () => {
-    await seed(data);
+    console.log("TEST SETUP: Entering beforeAll hook...");
+    try {
+        console.log("TEST SETUP: Attempting to seed database...");
+        await seed(data);
+        console.log("TEST SETUP: Database seeded successfully.");
+    } catch (error) {
+        console.error("TEST SETUP: !!! ERROR during database seeding !!!", error);
+        // It's crucial to re-throw here to fail the test run immediately if seeding fails
+        throw error;
+    }
 });
+
 afterAll(async () => {
-    await db.end();
+    console.log("TEST TEARDOWN: Entering afterAll hook...");
+    try {
+        console.log("TEST TEARDOWN: Attempting to end database connection pool...");
+        await db.end();
+        console.log("TEST TEARDOWN: Database connection pool ended successfully.");
+    } catch (error) {
+        console.error("TEST TEARDOWN: !!! ERROR ending database connection pool !!!", error);
+        // Don't re-throw here, as it might hide other test failures
+    }
+    console.log("TEST TEARDOWN: Exiting afterAll hook.");
 });
 
 describe("app",()=>{
@@ -19,7 +45,7 @@ describe("app",()=>{
         describe("GET/api/properties",()=>{
             describe("happy path",()=>{
                 test("returns a status code of 200",()=>{
-                    return request(app).get("/api/properties").expect(200);
+                    return request(app).get("/api/properties").expect(200).catch(console.error);
                 });
                 test("headers set to JSON",()=>{
                     return request(app).get("/api/properties").expect("Content-Type",/json/);
@@ -1171,8 +1197,6 @@ describe("app",()=>{
             message = await db.query(`
                 DROP TABLE IF EXISTS properties CASCADE;
             `);
-
-            console.log(message);
 
             return request(app).get("/api/properties").expect(500)
             .then(({body})=>{

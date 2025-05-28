@@ -36,6 +36,7 @@ const seed = async ({ usersData, propertyTypesData, propertiesData, favouritesDa
   const formattedImages = formatData([propertiesRef],["property_name"],["property_id"],imagesData)
   await insertImages (formattedImages);
 
+
 };
 
 module.exports = seed;

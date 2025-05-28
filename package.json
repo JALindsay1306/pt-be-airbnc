@@ -27,5 +27,8 @@
     "pg-format": "^1.0.4",
     "postgresql": "^0.0.1",
     "supertest": "^7.0.0"
+  },
+  "jest": {
+    "setupFilesAfterEnv": ["./jest.setup.js"]
   }
 }

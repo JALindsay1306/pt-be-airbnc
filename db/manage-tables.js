@@ -11,6 +11,7 @@ const {
 } = require("./queries");
 
 async function manageTables() {
+    console.log("hi")
     await db.query(`DROP TABLE IF EXISTS bookings;`);
 
     await db.query(`DROP TABLE IF EXISTS favourites;`);
